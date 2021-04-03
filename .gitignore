@@ -5,3 +5,6 @@
 /.vs/Example1/v16
 /Example1/bin/Debug/netcoreapp3.1
 /Example1/obj
+/Miners/bin/Debug/netcoreapp3.1
+/Miners/obj
+/.vs/Example1/DesignTimeBuild
