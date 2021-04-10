@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using System.Text;
 
 namespace Miners
 {
@@ -7,7 +9,8 @@ namespace Miners
     {
         private const string FILE_NAME = "minings.txt";
         private const int MINES_COUNT = 5;
-
+        private const string _digits = "abcdefghij";
+        private const string _digitsClean = "1234567890";
         static void Main(string[] args)
         {
             if (!File.Exists(FILE_NAME))
@@ -72,54 +75,78 @@ namespace Miners
 
                     averagesByQuartal[currentQ] = averages;
                 }
-                Console.WriteLine("Введите имя файла");
-                var outputFileName = Console.ReadLine();
-                string[] linesToRecord = new string[averagesByQuartal.Length];
-                for (int i = 0; i < averagesByQuartal.Length; i++)
-                {
-                    for (int j = 0; j < averagesByQuartal[i].Length; j++)
-                    {
-                        linesToRecord[i] += $"{averagesByQuartal[i][j]};";
-                    }
-                }
-                File.WriteAllLines(outputFileName, linesToRecord);
-
-
-                //Расчитать средний объём добычи угля по каждой шахте в течение квартала, указанного пользователем.
-                Console.WriteLine("Введите номер квартала");
-                var quartal = Console.ReadLine();
-                int qInt = int.Parse(quartal);
-                if (qInt < 1 || qInt > 4)
-                {
-                    Console.WriteLine("Ошибка ввода квартала");
-                    return;
-                }
-
-                switch (qInt)
-                {
-                    case 1:
-                        GetAverageIncomeForAllMines(1, 3, incomes);
-                        break;
-                    case 2:
-                        GetAverageIncomeForAllMines(4, 6, incomes);
-                        break;
-                    case 3:
-                        GetAverageIncomeForAllMines(7, 9, incomes);
-                        break;
-                    case 4:
-                        GetAverageIncomeForAllMines(10, 12, incomes);
-                        break;
-                }
-
-
-                //for (int i = 0; i < incomes.Length; i++)
+                //Console.WriteLine("Введите имя файла");
+                //var outputFileName = Console.ReadLine();
+                //string[] linesToRecord = new string[averagesByQuartal.Length];
+                //for (int i = 0; i < averagesByQuartal.Length; i++)
                 //{
-                //    for (int j = 0; j < MINES_COUNT; j++)
+                //    for (int j = 0; j < averagesByQuartal[i].Length; j++)
                 //    {
-                //        Console.Write($"{incomes[i, j]} ");
+                //        linesToRecord[i] += $"{averagesByQuartal[i][j]};";
                 //    }
-                //    Console.WriteLine();
                 //}
+                //File.WriteAllLines(outputFileName, linesToRecord);
+
+
+                ////Расчитать средний объём добычи угля по каждой шахте в течение квартала, указанного пользователем.
+                //Console.WriteLine("Введите номер квартала");
+                //var quartal = Console.ReadLine();
+                //int qInt = int.Parse(quartal);
+                //if (qInt < 1 || qInt > 4)
+                //{
+                //    Console.WriteLine("Ошибка ввода квартала");
+                //    return;
+                //}
+
+                //switch (qInt)
+                //{
+                //    case 1:
+                //        GetAverageIncomeForAllMines(1, 3, incomes);
+                //        break;
+                //    case 2:
+                //        GetAverageIncomeForAllMines(4, 6, incomes);
+                //        break;
+                //    case 3:
+                //        GetAverageIncomeForAllMines(7, 9, incomes);
+                //        break;
+                //    case 4:
+                //        GetAverageIncomeForAllMines(10, 12, incomes);
+                //        break;
+                //}
+
+                var answer = string.Empty;
+                while (!answer.Equals("y", StringComparison.InvariantCultureIgnoreCase) &&
+                       !answer.Equals("n", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Console.WriteLine("Сохранить результаты (Y/N):");
+                    answer = Console.ReadLine();
+
+                    var resultsFileName = "results.txt";
+                    var strings = new string[averagesByQuartal.Length];
+                    var dt = DateTime.Now;
+
+                    for (int i = 0; i < strings.Length; i++)
+                    {
+                        foreach (var i1 in averagesByQuartal[i])
+                        {
+                            var s = strings[i];
+                            s += i1.ToString();
+                            s += ";";
+                            for (int j = 0; j < s.Length; j++)
+                            {
+                                if (_digitsClean.Contains(s[j]))
+                                {
+                                    var oldChar = s[j];
+                                    var newChar = _digits[int.Parse(s[j].ToString())];
+                                    s=s.Replace(oldChar, newChar);
+                                }
+                            }
+
+                            strings[i] = s;
+                        }
+                    }
+                    File.WriteAllLines(resultsFileName, strings);
+                }
             }
             catch (Exception e)
             {

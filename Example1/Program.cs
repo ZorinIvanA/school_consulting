@@ -48,6 +48,7 @@ namespace Example1
         {
             Console.WriteLine("-----------Commands list ---------------");
             Console.WriteLine("? - outputs commands list");
+            Console.WriteLine("start - start defusing");
             Console.WriteLine("exit - exit software");
         }
 
